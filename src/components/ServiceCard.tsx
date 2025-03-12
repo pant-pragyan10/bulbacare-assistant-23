@@ -1,19 +1,18 @@
 
-import { ReactNode } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface ServiceCardProps {
-  icon: ReactNode;
+type ServiceCardProps = {
+  icon: React.ReactNode;
   title: string;
   description: string;
   features: string[];
   linkUrl: string;
   linkText: string;
   imageUrl: string;
-}
+};
 
 const ServiceCard = ({
   icon,
@@ -25,57 +24,59 @@ const ServiceCard = ({
   imageUrl,
 }: ServiceCardProps) => {
   return (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-md border border-border/60 bg-white">
-      <div className="aspect-video w-full overflow-hidden">
-        <img 
-          src={imageUrl} 
-          alt={title} 
-          className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" 
-        />
-      </div>
-      <CardHeader>
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
+    <Card className="overflow-hidden border bg-card">
+      <CardHeader className="p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
             {icon}
           </div>
-          <CardTitle>{title}</CardTitle>
+          <CardTitle className="text-lg text-foreground">{title}</CardTitle>
         </div>
-        <CardDescription className="text-muted-foreground pt-2">
+        <CardDescription className="text-base text-muted-foreground">
           {description}
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ul className="space-y-2">
+      <CardContent className="p-6 pt-0 space-y-6">
+        <div className="space-y-2">
           {features.map((feature, index) => (
-            <li key={index} className="flex items-start">
-              <svg
-                className="h-5 w-5 text-primary flex-shrink-0 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <span className="text-sm text-foreground">{feature}</span>
-            </li>
+            <div key={index} className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center text-primary">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 15 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
+                    fill="currentColor"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <span className="text-foreground text-sm">{feature}</span>
+            </div>
           ))}
-        </ul>
-      </CardContent>
-      <CardFooter>
-        <Link to={linkUrl} className="w-full">
-          <Button variant="outline" className="w-full group">
+        </div>
+        <div className="relative h-48 rounded-lg overflow-hidden">
+          <img
+            src={imageUrl}
+            alt={title}
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <Link to={linkUrl}>
+          <Button className="w-full group">
             <span>{linkText}</span>
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
           </Button>
         </Link>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
 };
 
 export default ServiceCard;
+
