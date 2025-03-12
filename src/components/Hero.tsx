@@ -11,18 +11,24 @@ const Hero = () => {
       
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-24 sm:pt-24 sm:pb-32">
         <div className="text-center space-y-8">
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
+            <span className="bg-gradient-to-r from-bulba-600 to-mint-500 dark:from-red-500 dark:to-green-600 bg-clip-text text-transparent">
+              BulbaCare
+            </span>
+          </h1>
+          
           <div className="inline-flex items-center space-x-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20 mb-2">
             <Shield className="h-3.5 w-3.5" />
             <span>AI-Powered Healthcare</span>
           </div>
           
-          <h1 className="heading-xl text-foreground">
+          <h2 className="heading-xl text-foreground">
             Your AI Healthcare Assistant
             <br />
-            <span className="bg-gradient-to-r from-primary to-mint-500 bg-clip-text text-transparent pb-2 inline-block">
+            <span className="bg-gradient-to-r from-primary to-mint-500 dark:from-red-500 dark:to-green-600 bg-clip-text text-transparent pb-2 inline-block">
               For Everyone
             </span>
-          </h1>
+          </h2>
           
           <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground">
             BulbaCare combines advanced AI with medical expertise to provide accessible skin 

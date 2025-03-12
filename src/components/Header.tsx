@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -32,7 +33,7 @@ export const Header = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "py-3 glass-card bg-white/90 backdrop-blur-lg shadow-sm"
+          ? "py-3 glass-card bg-white/90 dark:bg-black/50 backdrop-blur-lg shadow-sm"
           : "py-5 bg-transparent"
       }`}
     >
@@ -65,18 +66,29 @@ export const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <div className="ml-3">
-              <Button size="sm" className="shadow-sm button-glow">
-                Get Started
-              </Button>
+            <div className="ml-3 flex items-center space-x-2">
+              <ThemeToggle />
+              <Link to="/login">
+                <Button variant="outline" size="sm" className="shadow-sm">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Login
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button size="sm" className="shadow-sm button-glow">
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Register
+                </Button>
+              </Link>
             </div>
           </nav>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2">
+            <ThemeToggle />
             <button
               type="button"
-              className="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100/80"
+              className="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800/80"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
@@ -109,10 +121,19 @@ export const Header = () => {
               {item.name}
             </Link>
           ))}
-          <div className="pt-2 pb-1">
-            <Button size="sm" className="w-full shadow-sm button-glow">
-              Get Started
-            </Button>
+          <div className="pt-2 pb-1 flex flex-col space-y-2">
+            <Link to="/login" className="w-full">
+              <Button variant="outline" className="w-full justify-center">
+                <LogIn className="mr-2 h-4 w-4" />
+                Login
+              </Button>
+            </Link>
+            <Link to="/register" className="w-full">
+              <Button className="w-full shadow-sm button-glow justify-center">
+                <UserPlus className="mr-2 h-4 w-4" />
+                Register
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

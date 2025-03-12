@@ -36,6 +36,36 @@
     --radius: 1rem;
   }
 
+  .dark {
+    --background: 150 15% 8%;
+    --foreground: 150 10% 95%;
+
+    --card: 150 15% 10%;
+    --card-foreground: 150 10% 95%;
+
+    --popover: 150 15% 8%;
+    --popover-foreground: 150 10% 95%;
+
+    --primary: 0 70% 45%;  /* Red tint for dark mode */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 140 45% 35%;  /* Green tint for dark mode */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 150 15% 15%;
+    --muted-foreground: 150 10% 70%;
+
+    --accent: 150 15% 15%;
+    --accent-foreground: 150 10% 95%;
+
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 15% 20%;
+    --input: 150 15% 20%;
+    --ring: 0 70% 45%;
+  }
+
   * {
     @apply border-border;
   }
@@ -65,11 +95,11 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-soft rounded-2xl transition-all;
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-soft rounded-2xl transition-all dark:bg-black/30 dark:border-white/10;
   }
   
   .glass-input {
-    @apply bg-white/60 backdrop-blur-sm border border-white/30 shadow-inner-glow rounded-xl focus:ring-2 focus:ring-primary/30 transition-all;
+    @apply bg-white/60 backdrop-blur-sm border border-white/30 shadow-inner-glow rounded-xl focus:ring-2 focus:ring-primary/30 transition-all dark:bg-black/20 dark:border-white/10;
   }
   
   .button-glow {

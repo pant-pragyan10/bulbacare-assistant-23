@@ -1,8 +1,11 @@
 
+import { useState } from "react";
 import Layout from "@/components/Layout";
-import ImageAnalysis from "@/components/ImageAnalysis";
+import SkinImageAnalysis from "@/components/SkinImageAnalysis";
+import EyeImageAnalysis from "@/components/EyeImageAnalysis";
 import ResultsCard from "@/components/ResultsCard";
-import { Scan, FileQuestion, Search } from "lucide-react";
+import { Scan, FileQuestion, Search, Eye } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ImageAnalysisPage = () => {
   const previousResults = [
@@ -62,7 +65,24 @@ const ImageAnalysisPage = () => {
           </div>
 
           <div className="mb-12">
-            <ImageAnalysis />
+            <Tabs defaultValue="skin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="skin" className="flex items-center gap-2">
+                  <Scan className="h-4 w-4" />
+                  <span>Skin Analysis</span>
+                </TabsTrigger>
+                <TabsTrigger value="eye" className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  <span>Eye Analysis</span>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="skin">
+                <SkinImageAnalysis />
+              </TabsContent>
+              <TabsContent value="eye">
+                <EyeImageAnalysis />
+              </TabsContent>
+            </Tabs>
           </div>
 
           {previousResults.length > 0 && (
