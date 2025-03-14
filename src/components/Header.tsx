@@ -44,9 +44,11 @@ export const Header = () => {
               to="/"
               className="flex items-center space-x-2 text-foreground"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-bulba-500 to-mint-400 flex items-center justify-center text-white font-bold">
-                B
-              </div>
+              <img 
+                src="/lovable-uploads/70c9944c-3806-499d-959c-e64b4d7a462e.png" 
+                alt="BulbaCare Logo" 
+                className="h-10 w-auto"
+              />
               <span className="font-semibold text-xl">BulbaCare</span>
             </Link>
           </div>
