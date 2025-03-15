@@ -42,7 +42,16 @@ const ImageUploader = ({ previewUrl, onFileSelected, resetAnalysis }: ImageUploa
 
   const handleCameraCapture = () => {
     if (fileInputRef.current) {
+      // Set the capture attribute dynamically for mobile devices
+      fileInputRef.current.setAttribute("capture", "environment");
       fileInputRef.current.click();
+      
+      // Remove the capture attribute after clicking to allow normal file selection later
+      setTimeout(() => {
+        if (fileInputRef.current) {
+          fileInputRef.current.removeAttribute("capture");
+        }
+      }, 1000);
     }
   };
 
