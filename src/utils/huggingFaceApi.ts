@@ -1,4 +1,3 @@
-
 interface PredictionResult {
   label: string;
   confidence: number;
@@ -6,50 +5,21 @@ interface PredictionResult {
 
 export const getSkinDiseasePrediction = async (imageFile: File): Promise<PredictionResult> => {
   try {
-    // Create form data to send the image
-    const formData = new FormData();
-    formData.append("file", imageFile);
+    // This is a mock implementation since we're removing the API key functionality
+    // In a real application, you would replace this with actual API calls or local model inference
     
-    // This is the endpoint for the Hugging Face Inference API
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/pant-pragyan10/skin-disease-detection",
-      {
-        method: "POST",
-        headers: {
-          // The API key should be stored securely in production
-          // For demo purposes, we're using a temporary approach
-          "Authorization": `Bearer ${localStorage.getItem("hf_api_key") || ""}`,
-        },
-        body: formData,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log("HF API Response:", result);
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Parse the result based on the model's output format
-    // This may need to be adjusted based on your specific model's output
-    if (Array.isArray(result)) {
-      // Assuming the result is an array of predictions
-      const topPrediction = result[0];
-      return {
-        label: topPrediction.label,
-        confidence: topPrediction.score * 100, // Convert to percentage
-      };
-    } else if (result.label) {
-      // Direct label response
-      return {
-        label: result.label,
-        confidence: result.score * 100, // Convert to percentage
-      };
-    } else {
-      console.error("Unexpected API response format:", result);
-      throw new Error("Unexpected API response format");
-    }
+    // Sample response (random selection from available diseases)
+    const diseases = Object.keys(diseaseInfo);
+    const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+    const confidenceScore = 70 + Math.random() * 25; // Random score between 70-95%
+    
+    return {
+      label: randomDisease,
+      confidence: confidenceScore,
+    };
   } catch (error) {
     console.error("Error predicting skin disease:", error);
     throw error;
@@ -146,7 +116,7 @@ export const diseaseInfo: Record<string, {
       "Generally present from childhood or adolescence"
     ],
     recommendations: [
-      "Monitor for changes in size, shape, or color",
+      "Monitor for changes in size, shape or color",
       "Regular skin self-examinations",
       "Shield moles from excessive sun exposure",
       "Consult a dermatologist if you notice changes"
