@@ -4,12 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, Camera, RefreshCw, Check, AlertCircle, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
+import HuggingFaceApiKeyInput from "./HuggingFaceApiKeyInput";
+import { getSkinDiseasePrediction, diseaseInfo } from "@/utils/huggingFaceApi";
+
+interface AnalysisResult {
+  condition: string;
+  confidence: number;
+  symptoms: string[];
+  recommendations: string[];
+  description: string;
+}
 
 const SkinImageAnalysis = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<any | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,35 +59,45 @@ const SkinImageAnalysis = () => {
     }
   };
 
-  const analyzeImage = () => {
+  const analyzeImage = async () => {
     if (!selectedFile) {
       toast.error("Please select an image first.");
       return;
     }
 
+    if (!localStorage.getItem("hf_api_key")) {
+      toast.error("Please enter your Hugging Face API key.");
+      return;
+    }
+
     setIsAnalyzing(true);
 
-    // Simulating API call
-    setTimeout(() => {
-      const mockResults = {
-        condition: "Dermatitis",
-        confidence: 92.5,
-        symptoms: [
-          "Dry, sensitive skin", 
-          "Redness and inflammation", 
-          "Itchiness"
-        ],
-        recommendations: [
-          "Apply prescribed corticosteroid creams", 
-          "Use gentle, fragrance-free moisturizers", 
-          "Consult a dermatologist for persistent symptoms"
-        ]
-      };
+    try {
+      // Call the Hugging Face API
+      const prediction = await getSkinDiseasePrediction(selectedFile);
       
-      setAnalysisResult(mockResults);
-      setIsAnalyzing(false);
+      const conditionName = prediction.label;
+      const info = diseaseInfo[conditionName] || {
+        description: "Information not available for this condition.",
+        symptoms: ["Not specified"],
+        recommendations: ["Consult a healthcare professional for more information."]
+      };
+
+      setAnalysisResult({
+        condition: conditionName,
+        confidence: prediction.confidence,
+        description: info.description,
+        symptoms: info.symptoms,
+        recommendations: info.recommendations
+      });
+
       toast.success("Analysis completed successfully!");
-    }, 3000);
+    } catch (error) {
+      console.error("Analysis failed:", error);
+      toast.error("Analysis failed. Please try again or check your API key.");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const resetAnalysis = () => {
@@ -91,6 +111,8 @@ const SkinImageAnalysis = () => {
 
   return (
     <div className="space-y-6">
+      <HuggingFaceApiKeyInput />
+      
       <div
         className={`border-2 border-dashed rounded-xl p-6 transition-all ${
           previewUrl ? "border-primary/40" : "border-border hover:border-primary/40"
@@ -186,7 +208,7 @@ const SkinImageAnalysis = () => {
                 <div className="text-right">
                   <div className="text-sm text-muted-foreground">Confidence</div>
                   <div className="text-lg font-semibold text-foreground">
-                    {analysisResult.confidence}%
+                    {analysisResult.confidence.toFixed(1)}%
                   </div>
                 </div>
               </div>
@@ -194,6 +216,9 @@ const SkinImageAnalysis = () => {
               <div>
                 <div className="text-sm text-muted-foreground mb-1">Condition</div>
                 <div className="text-xl font-semibold">{analysisResult.condition}</div>
+                <p className="text-sm mt-1 text-muted-foreground">
+                  {analysisResult.description}
+                </p>
               </div>
 
               <div>
