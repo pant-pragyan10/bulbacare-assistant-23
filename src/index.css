@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -46,10 +45,10 @@
     --popover: 150 15% 8%;
     --popover-foreground: 150 10% 95%;
 
-    --primary: 0 70% 45%;  /* Red tint for dark mode */
+    --primary: 0 84% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 140 45% 35%;  /* Green tint for dark mode */
+    --secondary: 0 84% 55%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 150 15% 15%;
@@ -58,12 +57,12 @@
     --accent: 150 15% 15%;
     --accent-foreground: 150 10% 95%;
 
-    --destructive: 0 70% 45%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 150 15% 20%;
     --input: 150 15% 20%;
-    --ring: 0 70% 45%;
+    --ring: 0 84% 60%;
   }
 
   * {

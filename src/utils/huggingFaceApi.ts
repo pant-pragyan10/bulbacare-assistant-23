@@ -1,3 +1,6 @@
+
+import { Client } from "@gradio/client";
+
 interface PredictionResult {
   label: string;
   confidence: number;
@@ -5,20 +8,29 @@ interface PredictionResult {
 
 export const getSkinDiseasePrediction = async (imageFile: File): Promise<PredictionResult> => {
   try {
-    // This is a mock implementation since we're removing the API key functionality
-    // In a real application, you would replace this with actual API calls or local model inference
+    // Convert File to Blob
+    const blob = new Blob([await imageFile.arrayBuffer()], { type: imageFile.type });
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Connect to the Gradio client
+    const client = await Client.connect("pant-pragyan10/skin-disease-detection");
     
-    // Sample response (random selection from available diseases)
-    const diseases = Object.keys(diseaseInfo);
-    const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
-    const confidenceScore = 70 + Math.random() * 25; // Random score between 70-95%
+    // Make prediction
+    const result = await client.predict("/predict", { 
+      img: blob,
+    });
+
+    // Parse the result - assuming the model returns a string with format "disease_name (confidence%)"
+    const prediction = result.data[0];
     
+    // Extract disease name and confidence from the prediction
+    // This parsing might need adjustment based on the actual format returned by the model
+    const match = String(prediction).match(/(.+?)\s*\((\d+\.?\d*)%\)/);
+    const disease = match ? match[1] : String(prediction);
+    const confidence = match ? parseFloat(match[2]) : 90;
+
     return {
-      label: randomDisease,
-      confidence: confidenceScore,
+      label: disease,
+      confidence: confidence
     };
   } catch (error) {
     console.error("Error predicting skin disease:", error);
