@@ -1,9 +1,9 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, Camera, RefreshCw, Check, AlertCircle, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { getEyeDiseasePrediction, eyeDiseaseInfo } from "@/utils/eyeDiseaseApi";
 
 const EyeImageAnalysis = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -49,7 +49,7 @@ const EyeImageAnalysis = () => {
     }
   };
 
-  const analyzeImage = () => {
+  const analyzeImage = async () => {
     if (!selectedFile) {
       toast.error("Please select an image first.");
       return;
@@ -57,29 +57,27 @@ const EyeImageAnalysis = () => {
 
     setIsAnalyzing(true);
 
-    // Simulating API call
-    setTimeout(() => {
-      const mockResults = {
-        condition: "Conjunctivitis",
-        confidence: 88.7,
-        symptoms: [
-          "Redness in the white of the eye", 
-          "Increased tear production", 
-          "Burning or itching eyes",
-          "Discharge from the eye"
-        ],
-        recommendations: [
-          "Apply cool compresses to the eyes", 
-          "Avoid touching or rubbing your eyes", 
-          "Use prescribed antibiotic eye drops if bacterial",
-          "Consult an ophthalmologist immediately"
-        ]
-      };
+    try {
+      // Call the eye disease detection API
+      const prediction = await getEyeDiseasePrediction(selectedFile);
       
-      setAnalysisResult(mockResults);
-      setIsAnalyzing(false);
+      const conditionName = prediction.condition;
+      const info = eyeDiseaseInfo[conditionName] || eyeDiseaseInfo["Diabetic Retinopathy"];
+
+      setAnalysisResult({
+        condition: conditionName,
+        confidence: prediction.confidence,
+        symptoms: info.symptoms,
+        recommendations: info.recommendations
+      });
+
       toast.success("Analysis completed successfully!");
-    }, 3000);
+    } catch (error) {
+      console.error("Analysis failed:", error);
+      toast.error("Analysis failed. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const resetAnalysis = () => {
