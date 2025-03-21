@@ -7,26 +7,25 @@ interface EyePredictionResult {
 }
 
 interface EyeAnalysisParameters {
-  age: number;
-  sex: "Male" | "Female";
-  imageFile: File;
+  leftImageFile: File;
+  rightImageFile: File;
 }
 
 export const getEyeDiseasePrediction = async (
-  { age, sex, imageFile }: EyeAnalysisParameters
+  { leftImageFile, rightImageFile }: EyeAnalysisParameters
 ): Promise<EyePredictionResult> => {
   try {
-    // Convert File to Blob
-    const blob = new Blob([await imageFile.arrayBuffer()], { type: imageFile.type });
+    // Convert Files to Blobs
+    const leftEyeBlob = new Blob([await leftImageFile.arrayBuffer()], { type: leftImageFile.type });
+    const rightEyeBlob = new Blob([await rightImageFile.arrayBuffer()], { type: rightImageFile.type });
     
     // Connect to the Gradio client
-    const client = await Client.connect("alexakup05/eye");
+    const client = await Client.connect("Vinit710/GMED");
     
-    // Make prediction with all three parameters
+    // Make prediction with both eye images
     const result = await client.predict("/predict", { 
-      age: age,      
-      sex: sex,
-      img: blob, 
+      left_image: leftEyeBlob,
+      right_image: rightEyeBlob
     });
 
     // Extract the prediction data
@@ -34,23 +33,27 @@ export const getEyeDiseasePrediction = async (
     console.log("Eye prediction data:", prediction);
     
     // Parse the results
-    // Based on the console logs, the first item in the array contains the disease probabilities
+    // Assuming the API returns an object with disease probabilities
+    // This may need adjustment based on the actual response format
     const predictionObj = Array.isArray(prediction) && prediction.length > 0 
       ? prediction[0] 
-      : {};
+      : prediction;
     
     // Find the condition with the highest probability
     let highestCondition = "Diabetic Retinopathy";
     let highestConfidence = 0;
     
     // Iterate through the prediction object to find the condition with highest probability
-    for (const [condition, probabilityStr] of Object.entries(predictionObj)) {
-      // Convert probability string (e.g., "85.79%") to number
-      const confidence = parseFloat(String(probabilityStr).replace('%', ''));
-      
-      if (confidence > highestConfidence) {
-        highestConfidence = confidence;
-        highestCondition = condition;
+    // Adjust this parsing logic based on the actual response format
+    if (typeof predictionObj === 'object' && predictionObj !== null) {
+      for (const [condition, probabilityStr] of Object.entries(predictionObj)) {
+        // Convert probability string to number
+        const confidence = parseFloat(String(probabilityStr).replace('%', ''));
+        
+        if (confidence > highestConfidence) {
+          highestConfidence = confidence;
+          highestCondition = condition;
+        }
       }
     }
 

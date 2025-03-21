@@ -1,31 +1,44 @@
+
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, Camera, RefreshCw, Check, AlertCircle, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { getEyeDiseasePrediction, eyeDiseaseInfo } from "@/utils/eyeDiseaseApi";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 
 const EyeImageAnalysis = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [leftEyeFile, setLeftEyeFile] = useState<File | null>(null);
+  const [rightEyeFile, setRightEyeFile] = useState<File | null>(null);
+  const [leftEyePreview, setLeftEyePreview] = useState<string | null>(null);
+  const [rightEyePreview, setRightEyePreview] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any | null>(null);
-  const [patientAge, setPatientAge] = useState<number>(30);
-  const [patientSex, setPatientSex] = useState<"Male" | "Female">("Male");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const leftEyeInputRef = useRef<HTMLInputElement>(null);
+  const rightEyeInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLeftEyeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     if (file) {
       if (file.type.startsWith("image/")) {
-        setSelectedFile(file);
-        setPreviewUrl(URL.createObjectURL(file));
+        setLeftEyeFile(file);
+        setLeftEyePreview(URL.createObjectURL(file));
         setAnalysisResult(null);
       } else {
-        toast.error("Please select an image file.");
+        toast.error("Please select an image file for the left eye.");
+      }
+    }
+  };
+
+  const handleRightEyeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      if (file.type.startsWith("image/")) {
+        setRightEyeFile(file);
+        setRightEyePreview(URL.createObjectURL(file));
+        setAnalysisResult(null);
+      } else {
+        toast.error("Please select an image file for the right eye.");
       }
     }
   };
@@ -34,35 +47,61 @@ const EyeImageAnalysis = () => {
     event.preventDefault();
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleLeftEyeDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files?.[0] || null;
     if (file) {
       if (file.type.startsWith("image/")) {
-        setSelectedFile(file);
-        setPreviewUrl(URL.createObjectURL(file));
+        setLeftEyeFile(file);
+        setLeftEyePreview(URL.createObjectURL(file));
         setAnalysisResult(null);
       } else {
-        toast.error("Please drop an image file.");
+        toast.error("Please drop an image file for the left eye.");
       }
     }
   };
 
-  const handleCameraCapture = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.setAttribute("capture", "environment");
-      fileInputRef.current.click();
+  const handleRightEyeDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files?.[0] || null;
+    if (file) {
+      if (file.type.startsWith("image/")) {
+        setRightEyeFile(file);
+        setRightEyePreview(URL.createObjectURL(file));
+        setAnalysisResult(null);
+      } else {
+        toast.error("Please drop an image file for the right eye.");
+      }
+    }
+  };
+
+  const handleLeftEyeCapture = () => {
+    if (leftEyeInputRef.current) {
+      leftEyeInputRef.current.setAttribute("capture", "environment");
+      leftEyeInputRef.current.click();
       setTimeout(() => {
-        if (fileInputRef.current) {
-          fileInputRef.current.removeAttribute("capture");
+        if (leftEyeInputRef.current) {
+          leftEyeInputRef.current.removeAttribute("capture");
         }
       }, 1000);
     }
   };
 
-  const analyzeImage = async () => {
-    if (!selectedFile) {
-      toast.error("Please select an image first.");
+  const handleRightEyeCapture = () => {
+    if (rightEyeInputRef.current) {
+      rightEyeInputRef.current.setAttribute("capture", "environment");
+      rightEyeInputRef.current.click();
+      setTimeout(() => {
+        if (rightEyeInputRef.current) {
+          rightEyeInputRef.current.removeAttribute("capture");
+        }
+      }, 1000);
+    }
+  };
+
+  const analyzeImages = async () => {
+    if (!leftEyeFile || !rightEyeFile) {
+      toast.error("Please select both left and right eye images.");
       return;
     }
 
@@ -70,9 +109,8 @@ const EyeImageAnalysis = () => {
 
     try {
       const prediction = await getEyeDiseasePrediction({
-        age: patientAge,
-        sex: patientSex,
-        imageFile: selectedFile
+        leftImageFile: leftEyeFile,
+        rightImageFile: rightEyeFile
       });
       
       const conditionName = prediction.condition;
@@ -95,127 +133,203 @@ const EyeImageAnalysis = () => {
   };
 
   const resetAnalysis = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
+    setLeftEyeFile(null);
+    setRightEyeFile(null);
+    setLeftEyePreview(null);
+    setRightEyePreview(null);
     setAnalysisResult(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (leftEyeInputRef.current) {
+      leftEyeInputRef.current.value = "";
+    }
+    if (rightEyeInputRef.current) {
+      rightEyeInputRef.current.value = "";
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="age">Patient Age</Label>
-            <Input 
-              id="age" 
-              type="number" 
-              min="0" 
-              max="120"
-              value={patientAge} 
-              onChange={(e) => setPatientAge(parseInt(e.target.value) || 0)} 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Left Eye Upload */}
+        <div>
+          <Label className="mb-2 block">Left Eye Image</Label>
+          <div
+            className={`border-2 border-dashed rounded-xl p-4 transition-all ${
+              leftEyePreview ? "border-secondary/40" : "border-border hover:border-secondary/40"
+            } bg-background/50`}
+            onDragOver={handleDragOver}
+            onDrop={handleLeftEyeDrop}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleLeftEyeChange}
+              className="hidden"
+              ref={leftEyeInputRef}
             />
+
+            {leftEyePreview ? (
+              <div className="space-y-4">
+                <div className="aspect-square max-h-[200px] mx-auto overflow-hidden rounded-lg">
+                  <img
+                    src={leftEyePreview}
+                    alt="Left Eye Preview"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => {
+                      setLeftEyeFile(null);
+                      setLeftEyePreview(null);
+                      if (leftEyeInputRef.current) {
+                        leftEyeInputRef.current.value = "";
+                      }
+                    }}
+                  >
+                    Change Image
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center space-y-3">
+                <div className="mx-auto w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <Eye className="h-6 w-6 text-secondary" />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Upload left eye image
+                </p>
+                <div className="flex justify-center space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => leftEyeInputRef.current?.click()}
+                  >
+                    <Upload className="mr-1 h-3 w-3" />
+                    Upload
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    size="sm"
+                    onClick={handleLeftEyeCapture}
+                  >
+                    <Camera className="mr-1 h-3 w-3" />
+                    Camera
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
-          
-          <div className="space-y-2">
-            <Label>Patient Sex</Label>
-            <RadioGroup 
-              value={patientSex} 
-              onValueChange={(value) => setPatientSex(value as "Male" | "Female")}
-              className="flex space-x-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Male" id="male" />
-                <Label htmlFor="male">Male</Label>
+        </div>
+
+        {/* Right Eye Upload */}
+        <div>
+          <Label className="mb-2 block">Right Eye Image</Label>
+          <div
+            className={`border-2 border-dashed rounded-xl p-4 transition-all ${
+              rightEyePreview ? "border-secondary/40" : "border-border hover:border-secondary/40"
+            } bg-background/50`}
+            onDragOver={handleDragOver}
+            onDrop={handleRightEyeDrop}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleRightEyeChange}
+              className="hidden"
+              ref={rightEyeInputRef}
+            />
+
+            {rightEyePreview ? (
+              <div className="space-y-4">
+                <div className="aspect-square max-h-[200px] mx-auto overflow-hidden rounded-lg">
+                  <img
+                    src={rightEyePreview}
+                    alt="Right Eye Preview"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => {
+                      setRightEyeFile(null);
+                      setRightEyePreview(null);
+                      if (rightEyeInputRef.current) {
+                        rightEyeInputRef.current.value = "";
+                      }
+                    }}
+                  >
+                    Change Image
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Female" id="female" />
-                <Label htmlFor="female">Female</Label>
+            ) : (
+              <div className="text-center space-y-3">
+                <div className="mx-auto w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <Eye className="h-6 w-6 text-secondary" />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Upload right eye image
+                </p>
+                <div className="flex justify-center space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => rightEyeInputRef.current?.click()}
+                  >
+                    <Upload className="mr-1 h-3 w-3" />
+                    Upload
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    size="sm"
+                    onClick={handleRightEyeCapture}
+                  >
+                    <Camera className="mr-1 h-3 w-3" />
+                    Camera
+                  </Button>
+                </div>
               </div>
-            </RadioGroup>
+            )}
           </div>
         </div>
       </div>
 
-      <div
-        className={`border-2 border-dashed rounded-xl p-6 transition-all ${
-          previewUrl ? "border-secondary/40" : "border-border hover:border-secondary/40"
-        } bg-background/50`}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-          ref={fileInputRef}
-        />
-
-        {previewUrl ? (
-          <div className="space-y-4">
-            <div className="aspect-square max-h-[400px] mx-auto overflow-hidden rounded-lg">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="flex justify-center space-x-3">
-              <Button variant="outline" size="sm" onClick={resetAnalysis}>
-                Change Image
-              </Button>
-              <Button 
-                size="sm" 
-                variant="secondary"
-                onClick={analyzeImage} 
-                disabled={isAnalyzing}
-                className="button-glow"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    Analyze Eye
-                  </>
-                )}
-              </Button>
-            </div>
+      {/* Analysis Button */}
+      <div className="flex justify-center mt-6">
+        {(leftEyePreview && rightEyePreview) ? (
+          <div className="space-x-3">
+            <Button variant="outline" onClick={resetAnalysis}>
+              Start Over
+            </Button>
+            <Button 
+              onClick={analyzeImages} 
+              disabled={isAnalyzing}
+              className="button-glow"
+            >
+              {isAnalyzing ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  Analyze Eyes
+                </>
+              )}
+            </Button>
           </div>
         ) : (
-          <div className="text-center space-y-4">
-            <div className="mx-auto w-20 h-20 rounded-full bg-secondary/10 flex items-center justify-center">
-              <Eye className="h-10 w-10 text-secondary" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Upload eye image</h3>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Drag and drop your eye image here, or click the buttons below to
-                upload a file or take a photo.
-              </p>
-            </div>
-            <div className="flex justify-center space-x-3 pt-2">
-              <Button 
-                variant="outline" 
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="mr-2 h-4 w-4" />
-                Upload File
-              </Button>
-              <Button variant="secondary" onClick={handleCameraCapture} className="button-glow">
-                <Camera className="mr-2 h-4 w-4" />
-                Take Photo
-              </Button>
-            </div>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            Please upload both left and right eye images to proceed with analysis
+          </p>
         )}
       </div>
 
+      {/* Results Section */}
       {analysisResult && (
         <Card className="animate-slide-in-bottom">
           <CardContent className="pt-6">
