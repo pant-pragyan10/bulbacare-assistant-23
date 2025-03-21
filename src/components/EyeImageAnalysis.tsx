@@ -4,12 +4,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Upload, Camera, RefreshCw, Check, AlertCircle, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { getEyeDiseasePrediction, eyeDiseaseInfo } from "@/utils/eyeDiseaseApi";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const EyeImageAnalysis = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any | null>(null);
+  const [patientAge, setPatientAge] = useState<number>(30);
+  const [patientSex, setPatientSex] = useState<"Male" | "Female">("Male");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +50,13 @@ const EyeImageAnalysis = () => {
 
   const handleCameraCapture = () => {
     if (fileInputRef.current) {
+      fileInputRef.current.setAttribute("capture", "environment");
       fileInputRef.current.click();
+      setTimeout(() => {
+        if (fileInputRef.current) {
+          fileInputRef.current.removeAttribute("capture");
+        }
+      }, 1000);
     }
   };
 
@@ -58,8 +69,11 @@ const EyeImageAnalysis = () => {
     setIsAnalyzing(true);
 
     try {
-      // Call the eye disease detection API
-      const prediction = await getEyeDiseasePrediction(selectedFile);
+      const prediction = await getEyeDiseasePrediction({
+        age: patientAge,
+        sex: patientSex,
+        imageFile: selectedFile
+      });
       
       const conditionName = prediction.condition;
       const info = eyeDiseaseInfo[conditionName] || eyeDiseaseInfo["Diabetic Retinopathy"];
@@ -91,6 +105,40 @@ const EyeImageAnalysis = () => {
 
   return (
     <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="age">Patient Age</Label>
+            <Input 
+              id="age" 
+              type="number" 
+              min="0" 
+              max="120"
+              value={patientAge} 
+              onChange={(e) => setPatientAge(parseInt(e.target.value) || 0)} 
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label>Patient Sex</Label>
+            <RadioGroup 
+              value={patientSex} 
+              onValueChange={(value) => setPatientSex(value as "Male" | "Female")}
+              className="flex space-x-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Male" id="male" />
+                <Label htmlFor="male">Male</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Female" id="female" />
+                <Label htmlFor="female">Female</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
+      </div>
+
       <div
         className={`border-2 border-dashed rounded-xl p-6 transition-all ${
           previewUrl ? "border-secondary/40" : "border-border hover:border-secondary/40"
