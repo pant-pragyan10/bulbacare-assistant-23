@@ -1,9 +1,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Send, AlertTriangle, Bot, ArrowDown } from "lucide-react";
+import { getMentalHealthResponse } from "@/utils/mentalHealthApi";
 
 interface Message {
   id: string;
@@ -16,7 +16,7 @@ const MentalHealthChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
-      text: "Hello! I'm your mental health assistant. I'm here to listen and provide support. How are you feeling today?",
+      text: "Hello! I'm Dr. Well Being, your mental health assistant. I'm here to listen and provide support. How are you feeling today?",
       sender: "assistant",
       timestamp: new Date(),
     },
@@ -25,21 +25,7 @@ const MentalHealthChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messageEndRef = useRef<HTMLDivElement>(null);
 
-  const generateResponseForMessage = (message: string): string => {
-    // Simple predefined responses based on keywords
-    const responses = [
-      "I understand that can be challenging. Would you like to talk more about how this is affecting you?",
-      "Thank you for sharing that with me. What specific aspects of this situation are most concerning to you?",
-      "It sounds like you're going through a lot right now. Have you tried any coping strategies that have helped in the past?",
-      "I hear you. It's important to acknowledge these feelings. Would it help to explore some potential next steps?",
-      "That's completely understandable. Many people experience similar feelings. How long have you been feeling this way?",
-    ];
-    
-    // In a real app, this would be a call to an AI model
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
-
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!newMessage.trim()) return;
@@ -55,18 +41,33 @@ const MentalHealthChat = () => {
     setNewMessage("");
     setIsTyping(true);
     
-    // Simulate AI response delay
-    setTimeout(() => {
+    try {
+      // Get response from the Mental Health API
+      const response = await getMentalHealthResponse(userMessage.text);
+      
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: generateResponseForMessage(userMessage.text),
+        text: response,
         sender: "assistant",
         timestamp: new Date(),
       };
       
       setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error("Error in chat:", error);
+      
+      // Add error message
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm sorry, I encountered an issue while processing your message. Please try again.",
+        sender: "assistant",
+        timestamp: new Date(),
+      };
+      
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const formatTime = (date: Date) => {
@@ -89,8 +90,8 @@ const MentalHealthChat = () => {
             <Bot className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-medium">Mental Health Assistant</h3>
-            <p className="text-xs text-muted-foreground">AI-powered support</p>
+            <h3 className="font-medium">Dr. Well Being</h3>
+            <p className="text-xs text-muted-foreground">AI-powered mental health support</p>
           </div>
         </div>
         <Button variant="outline" size="sm" className="text-xs h-8">

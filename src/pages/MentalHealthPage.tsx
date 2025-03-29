@@ -35,7 +35,7 @@ const MentalHealthPage = () => {
           <div className="space-y-2 text-center mb-8">
             <h1 className="heading-lg">Mental Health Support</h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our AI mental health assistant provides compassionate, confidential support whenever you need it. Share your thoughts and receive personalized guidance for emotional well-being.
+              Dr. Well Being, our AI mental health assistant, provides compassionate, confidential support whenever you need it. Share your thoughts and receive personalized guidance for emotional well-being.
             </p>
           </div>
 
@@ -49,7 +49,7 @@ const MentalHealthPage = () => {
                 <CardHeader>
                   <CardTitle>How It Works</CardTitle>
                   <CardDescription>
-                    Our AI assistant uses natural language processing to understand your concerns and provide evidence-based support.
+                    Dr. Well Being uses natural language processing to understand your concerns and provide evidence-based support.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
