@@ -27,9 +27,14 @@ export const getMentalHealthResponse = async (
     // Log the full API response
     console.log("Mental Health API response:", result);
     
-    // Parse the response data
-    const response = result.data as ChatResponse;
-    return response.response || "I'm having trouble understanding. Can you rephrase that?";
+    // Handle the response format correctly based on the API structure
+    if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+      // Extract the response text from the first element of the data array
+      return result.data[0] || "I'm having trouble understanding. Can you rephrase that?";
+    }
+    
+    // Fallback for unexpected response structure
+    return "I'm having trouble understanding. Can you rephrase that?";
   } catch (error) {
     console.error("Error getting mental health response:", error);
     return "I'm sorry, I'm having trouble connecting right now. Please try again later.";
