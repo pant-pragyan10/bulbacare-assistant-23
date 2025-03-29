@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, AlertTriangle, Bot, ArrowDown } from "lucide-react";
 import { getMentalHealthResponse } from "@/utils/mentalHealthApi";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -24,6 +25,7 @@ const MentalHealthChat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messageEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,8 +44,13 @@ const MentalHealthChat = () => {
     setIsTyping(true);
     
     try {
-      // Get response from the Mental Health API
-      const response = await getMentalHealthResponse(userMessage.text);
+      console.log("Sending message to API:", newMessage);
+      
+      // Get response from the Mental Health API with custom system message
+      const systemMessage = "You are Dr. Well Being, a mental health assistant. Provide supportive, empathetic responses based on psychological principles.";
+      const response = await getMentalHealthResponse(newMessage, systemMessage);
+      
+      console.log("Received response:", response);
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -55,6 +62,12 @@ const MentalHealthChat = () => {
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error in chat:", error);
+      
+      toast({
+        title: "Connection Error",
+        description: "We're having trouble connecting to our assistant. Please try again.",
+        variant: "destructive",
+      });
       
       // Add error message
       const errorMessage: Message = {
@@ -152,7 +165,7 @@ const MentalHealthChat = () => {
             placeholder="Type your message..."
             className="glass-input"
           />
-          <Button type="submit" size="icon" className="button-glow">
+          <Button type="submit" size="icon" className="button-glow" disabled={isTyping}>
             <Send className="h-4 w-4" />
           </Button>
         </form>

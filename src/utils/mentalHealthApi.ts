@@ -10,15 +10,23 @@ export const getMentalHealthResponse = async (
   systemMessage: string = "You are Dr. Well Being, a mental health assistant. Provide supportive, empathetic responses."
 ): Promise<string> => {
   try {
+    console.log("Sending message to Mental Health API:", { userMessage, systemMessage });
+    
+    // Connect to the Hugging Face space
     const client = await Client.connect("hrutikkharjul/Mental-health-chatbot");
+    
+    // Make the API request
     const result = await client.predict("/chat", {
       message: userMessage,
       system_message: systemMessage,
-      max_tokens: 256, // Increased for more complete responses
+      max_tokens: 256,  // Increased for more complete responses
       temperature: 0.7, // Slightly increased for more natural responses
-      top_p: 0.9, // Adjusted for better response variety
+      top_p: 0.9,      // Adjusted for better response variety
     });
 
+    // Log the full API response
+    console.log("Mental Health API response:", result);
+    
     // Parse the response data
     const response = result.data as ChatResponse;
     return response.response || "I'm having trouble understanding. Can you rephrase that?";
