@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -329,12 +328,12 @@ const EyeImageAnalysis = () => {
         )}
       </div>
 
-      {/* Results Section */}
+      {/* Results Section - Modified to remove confidence part */}
       {analysisResult && (
         <Card className="animate-slide-in-bottom">
           <CardContent className="pt-6">
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <div className="flex items-center space-x-2">
                   <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
                     <Check className="h-5 w-5 text-secondary" />
@@ -344,12 +343,6 @@ const EyeImageAnalysis = () => {
                     <p className="text-sm text-muted-foreground">
                       Based on our AI analysis
                     </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-muted-foreground">Confidence</div>
-                  <div className="text-lg font-semibold text-foreground">
-                    {analysisResult.confidence}%
                   </div>
                 </div>
               </div>

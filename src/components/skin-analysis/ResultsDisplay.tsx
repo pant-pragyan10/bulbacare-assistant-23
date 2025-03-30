@@ -19,7 +19,7 @@ const ResultsDisplay = ({ result }: ResultsDisplayProps) => {
     <Card className="animate-slide-in-bottom">
       <CardContent className="pt-6">
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center">
             <div className="flex items-center space-x-2">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Check className="h-5 w-5 text-primary" />
@@ -29,12 +29,6 @@ const ResultsDisplay = ({ result }: ResultsDisplayProps) => {
                 <p className="text-sm text-muted-foreground">
                   Based on our AI analysis
                 </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Confidence</div>
-              <div className="text-lg font-semibold text-foreground">
-                {result.confidence.toFixed(1)}%
               </div>
             </div>
           </div>

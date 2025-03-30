@@ -27,20 +27,6 @@ const ResultsCard = ({
           <div className="aspect-square overflow-hidden rounded-lg">
             <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
           </div>
-          <div className="mt-4">
-            <div className="text-sm text-muted-foreground">Confidence Score</div>
-            <div className="flex items-center justify-between mt-1">
-              <div className="font-semibold text-lg">{confidenceScore}%</div>
-              <div className="w-2/3 h-2 bg-muted rounded-full">
-                <div 
-                  className={`h-full rounded-full ${
-                    confidenceScore > 80 ? 'bg-mint-500' : confidenceScore > 50 ? 'bg-amber-500' : 'bg-red-500'
-                  }`} 
-                  style={{ width: `${confidenceScore}%` }}
-                ></div>
-              </div>
-            </div>
-          </div>
         </div>
         <div className="md:w-2/3 p-6">
           <CardHeader className="px-0 pt-0">

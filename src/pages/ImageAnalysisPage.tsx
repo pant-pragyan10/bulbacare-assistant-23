@@ -28,7 +28,7 @@ const ImageAnalysisPage = () => {
         "Regular follow-ups after treatment",
       ],
       date: "2023-09-15",
-      imageUrl: "https://images.unsplash.com/photo-1576671414121-aa2d0339189c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+      imageUrl: "/lovable-uploads/24937ef8-9efb-49e5-9b25-aff891831517.png",
     },
     {
       id: 2,
