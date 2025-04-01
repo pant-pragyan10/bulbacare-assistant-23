@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -45,10 +46,10 @@
     --popover: 150 15% 8%;
     --popover-foreground: 150 10% 95%;
 
-    --primary: 0 84% 60%;
+    --primary: 150 60% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 84% 55%;
+    --secondary: 150 40% 45%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 150 15% 15%;
@@ -62,7 +63,7 @@
 
     --border: 150 15% 20%;
     --input: 150 15% 20%;
-    --ring: 0 84% 60%;
+    --ring: 150 40% 40%;
   }
 
   * {

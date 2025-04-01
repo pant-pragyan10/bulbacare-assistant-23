@@ -73,7 +73,7 @@ const ImageUploader = ({ previewUrl, onFileSelected, resetAnalysis }: ImageUploa
 
       {previewUrl ? (
         <div className="space-y-4">
-          <div className="aspect-square max-h-[400px] mx-auto overflow-hidden rounded-lg">
+          <div className="aspect-square max-h-[400px] mx-auto overflow-hidden rounded-lg relative">
             <img
               src={previewUrl}
               alt="Preview"

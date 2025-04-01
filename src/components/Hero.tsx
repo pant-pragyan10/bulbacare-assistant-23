@@ -7,12 +7,12 @@ import { ArrowRight, Shield, Sparkles } from "lucide-react";
 const Hero = () => {
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-background to-background/50">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzQkEzRkYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDN2M2gtM3ptMC0xN2gzdjNoLTN6TTE3IDM0aDN2M2gtM3pNMCAxN2gzdjNoLTN6TTAgMzRoM3YzSDB6TTE3IDBoM3YzaC0zek0wIDBoM3YzSDB6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzQkEzRkYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDN2M2gtM3ptMC0xN2gzdjNoLTN6TTE3IDM0aDN2M2gtM3pNMCAxN2gzdjNoLTN6TTA7leSA9ICJub25lIj4KICAgICAgPHRpdGxlPkNvZGljb248L3RpdGxlPgogICAgICA8cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0yIDhsNCA0LTQgNCIgLz4KICAgIDwvc3ZnPg==')] opacity-30" />
       
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-24 sm:pt-24 sm:pb-32">
         <div className="text-center space-y-8">
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-            <span className="bg-gradient-to-r from-bulba-600 to-mint-500 dark:from-red-500 dark:to-green-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-bulba-600 to-mint-500 dark:from-green-500 dark:to-green-600 bg-clip-text text-transparent">
               BulbaCare
             </span>
           </h1>
@@ -25,7 +25,7 @@ const Hero = () => {
           <h2 className="heading-xl text-foreground">
             Your AI Healthcare Assistant
             <br />
-            <span className="bg-gradient-to-r from-primary to-mint-500 dark:from-red-500 dark:to-green-600 bg-clip-text text-transparent pb-2 inline-block">
+            <span className="bg-gradient-to-r from-primary to-mint-500 dark:from-green-500 dark:to-green-600 bg-clip-text text-transparent pb-2 inline-block">
               For Everyone
             </span>
           </h2>
@@ -59,27 +59,6 @@ const Hero = () => {
               alt="BulbaCare Dashboard" 
               className="h-full w-full object-cover"
             />
-          </div>
-          
-          {/* Floating Stats Cards */}
-          <div className="absolute -top-6 left-[10%] hidden md:block">
-            <div className="glass-card p-4 shadow-lg w-48 animate-float">
-              <div className="text-xs font-medium text-muted-foreground">Accuracy Rate</div>
-              <div className="text-xl font-bold mt-1 text-foreground">96.7%</div>
-              <div className="w-full h-2 bg-muted rounded-full mt-2">
-                <div className="h-full bg-primary rounded-full" style={{ width: '96.7%' }}></div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="absolute -bottom-6 right-[10%] hidden md:block">
-            <div className="glass-card p-4 shadow-lg w-48 animate-float" style={{ animationDelay: '1s' }}>
-              <div className="text-xs font-medium text-muted-foreground">User Satisfaction</div>
-              <div className="text-xl font-bold mt-1 text-foreground">98.2%</div>
-              <div className="w-full h-2 bg-muted rounded-full mt-2">
-                <div className="h-full bg-mint-500 rounded-full" style={{ width: '98.2%' }}></div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
