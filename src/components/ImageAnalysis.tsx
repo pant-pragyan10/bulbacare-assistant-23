@@ -61,7 +61,6 @@ const ImageAnalysis = () => {
     setTimeout(() => {
       const mockResults = {
         condition: "Dermatitis",
-        confidence: 92.5,
         symptoms: [
           "Dry, sensitive skin", 
           "Redness and inflammation", 
@@ -171,23 +170,15 @@ const ImageAnalysis = () => {
         <Card className="animate-slide-in-bottom">
           <CardContent className="pt-6">
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Check className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-medium">Analysis Results</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Based on our AI analysis
-                    </p>
-                  </div>
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Check className="h-5 w-5 text-primary" />
                 </div>
-                <div className="text-right">
-                  <div className="text-sm text-muted-foreground">Confidence</div>
-                  <div className="text-lg font-semibold text-foreground">
-                    {analysisResult.confidence}%
-                  </div>
+                <div className="ml-3">
+                  <h3 className="text-lg font-medium">Analysis Results</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Based on our AI analysis
+                  </p>
                 </div>
               </div>
 
@@ -224,9 +215,9 @@ const ImageAnalysis = () => {
                 </ul>
               </div>
 
-              <div className="px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start">
-                <AlertCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-amber-800">
+              <div className="px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start dark:bg-green-950 dark:border-green-800">
+                <AlertCircle className="h-5 w-5 text-amber-500 dark:text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-amber-800 dark:text-green-200">
                   This analysis is for informational purposes only and should not replace professional medical advice. Please consult a healthcare provider for proper diagnosis and treatment.
                 </div>
               </div>

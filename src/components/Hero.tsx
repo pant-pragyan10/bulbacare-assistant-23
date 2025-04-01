@@ -55,7 +55,7 @@ const Hero = () => {
         <div className="mt-16 sm:mt-24 relative mx-auto max-w-5xl">
           <div className="aspect-[16/9] overflow-hidden rounded-2xl shadow-xl ring-1 ring-gray-900/10">
             <img 
-              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
+              src="/lovable-uploads/24937ef8-9efb-49e5-9b25-aff891831517.png" 
               alt="BulbaCare Dashboard" 
               className="h-full w-full object-cover"
             />
