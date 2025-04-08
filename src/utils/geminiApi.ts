@@ -140,6 +140,18 @@ export const skinDiseaseInfo: Record<string, {
       "Consult with a dermatologist for evaluation",
       "No treatment needed for most benign lesions"
     ]
+  },
+  "Healthy": {
+    description: "No skin disease detected.",
+    symptoms: [
+      "No concerning symptoms observed"
+    ],
+    recommendations: [
+      "Continue regular skin care routine",
+      "Use sun protection",
+      "Perform regular skin self-examinations",
+      "If you still have any doubts, please consult a doctor"
+    ]
   }
 };
 
@@ -239,7 +251,7 @@ const fileToBase64 = (file: File): Promise<string> => {
   });
 };
 
-// Modified to work in browser environment with File objects
+// Modified to work in browser environment with File objects and using the new prompt
 export const detectDiseaseFromImage = async (imageFile: File): Promise<string> => {
   try {
     // Load the Google Generative AI SDK dynamically
@@ -254,7 +266,7 @@ export const detectDiseaseFromImage = async (imageFile: File): Promise<string> =
     // Set up the model
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     
-    const prompt = "Only return the name of the Human disease in this image. Do not give extra text.";
+    const prompt = "Only return the name of the disease if it's a skin disease and provide recommendations and tell whether to consult the doctor or not. Return 'healthy' if no disease is detected and 'but if you still have any doubts please consult a doctor'.";
     
     // Create the image part
     const imagePart = {
@@ -270,7 +282,12 @@ export const detectDiseaseFromImage = async (imageFile: File): Promise<string> =
     const text = response.text().trim();
     
     console.log("Gemini API response:", text);
-    return text;
+    
+    // Extract just the disease name for our database lookup
+    // For simplicity, we'll take the first word or phrase before any punctuation or additional text
+    const diseaseName = text.split(/[,.:\n]/)[0].trim();
+    
+    return diseaseName;
     
   } catch (error) {
     console.error("Error detecting disease with Gemini API:", error);
@@ -278,12 +295,9 @@ export const detectDiseaseFromImage = async (imageFile: File): Promise<string> =
     
     // Fallback to a random disease for demonstration
     const skinDiseases = Object.keys(skinDiseaseInfo);
-    const eyeDiseases = Object.keys(eyeDiseaseInfo);
-    const isEyeImage = imageFile.name.toLowerCase().includes('eye');
-    const diseases = isEyeImage ? eyeDiseases : skinDiseases;
-    const randomIndex = Math.floor(Math.random() * diseases.length);
+    const randomIndex = Math.floor(Math.random() * skinDiseases.length);
     
-    return diseases[randomIndex];
+    return skinDiseases[randomIndex];
   }
 };
 
