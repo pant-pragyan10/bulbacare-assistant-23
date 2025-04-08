@@ -14,6 +14,14 @@ const SkinImageAnalysis = () => {
     analyzeImage
   } = useSkinAnalysis();
 
+  // Transform the analysisResult to the format expected by ResultsDisplay
+  const formattedResults = analysisResult ? [
+    {
+      label: analysisResult.condition,
+      score: analysisResult.confidence
+    }
+  ] : null;
+
   return (
     <div className="space-y-6">
       <ImageUploader 
@@ -28,7 +36,7 @@ const SkinImageAnalysis = () => {
         </div>
       )}
 
-      {analysisResult && <ResultsDisplay result={analysisResult} />}
+      <ResultsDisplay results={formattedResults} isLoading={isAnalyzing} />
     </div>
   );
 };
