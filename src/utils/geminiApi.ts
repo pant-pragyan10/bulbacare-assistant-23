@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 
 // Disease information database
@@ -252,7 +253,7 @@ const fileToBase64 = (file: File): Promise<string> => {
 };
 
 // Modified to work in browser environment with File objects and using the new prompt
-export const detectDiseaseFromImage = async (imageFile: File): Promise<string> => {
+export const detectDiseaseFromImage = async (imageFile: File, type: 'skin' | 'eye' = 'skin'): Promise<string> => {
   try {
     // Load the Google Generative AI SDK dynamically
     const { GoogleGenerativeAI } = await import("@google/generative-ai");
@@ -266,7 +267,10 @@ export const detectDiseaseFromImage = async (imageFile: File): Promise<string> =
     // Set up the model
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     
-    const prompt = "Only return the name of the disease if it's a skin disease and provide recommendations and tell whether to consult the doctor or not. Return 'healthy' if no disease is detected and 'but if you still have any doubts please consult a doctor'.";
+    // Select the appropriate prompt based on type
+    const prompt = type === 'skin' 
+      ? "Only return the name of the disease if it's a skin disease and provide recommendations and tell whether to consult the doctor or not. Return 'healthy' if no disease is detected and 'but if you still have any doubts please consult a doctor'."
+      : "Only return the name of the disease if it's a eye disease and provide recommendations and tell whether to consult the doctor or not. Return 'healthy' if no disease is detected and 'but if you still have any doubts please consult a doctor'.";
     
     // Create the image part
     const imagePart = {
@@ -290,14 +294,14 @@ export const detectDiseaseFromImage = async (imageFile: File): Promise<string> =
     return diseaseName;
     
   } catch (error) {
-    console.error("Error detecting disease with Gemini API:", error);
-    toast.error("Failed to analyze the image with Gemini API. Please try again.");
+    console.error(`Error detecting ${type} disease with Gemini API:`, error);
+    toast.error(`Failed to analyze the image with Gemini API. Please try again.`);
     
     // Fallback to a random disease for demonstration
-    const skinDiseases = Object.keys(skinDiseaseInfo);
-    const randomIndex = Math.floor(Math.random() * skinDiseases.length);
+    const diseaseList = type === 'skin' ? Object.keys(skinDiseaseInfo) : Object.keys(eyeDiseaseInfo);
+    const randomIndex = Math.floor(Math.random() * diseaseList.length);
     
-    return skinDiseases[randomIndex];
+    return diseaseList[randomIndex];
   }
 };
 
