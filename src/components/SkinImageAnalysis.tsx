@@ -17,8 +17,7 @@ const SkinImageAnalysis = () => {
   // Transform the analysisResult to the format expected by ResultsDisplay
   const formattedResults = analysisResult ? [
     {
-      label: analysisResult.condition,
-      score: analysisResult.confidence
+      label: analysisResult.condition
     }
   ] : null;
 

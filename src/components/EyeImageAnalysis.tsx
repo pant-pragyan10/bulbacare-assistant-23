@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, Camera, RefreshCw, Check, AlertCircle, Eye } from "lucide-react";
 import { toast } from "sonner";
-import { getEyeDiseasePrediction, eyeDiseaseInfo } from "@/utils/eyeDiseaseApi";
+import { detectDiseaseFromImage, getDiseaseInfo, eyeDiseaseInfo } from "@/utils/geminiApi";
 import { Label } from "@/components/ui/label";
 
 const EyeImageAnalysis = () => {
@@ -107,17 +107,14 @@ const EyeImageAnalysis = () => {
     setIsAnalyzing(true);
 
     try {
-      const prediction = await getEyeDiseasePrediction({
-        leftImageFile: leftEyeFile,
-        rightImageFile: rightEyeFile
-      });
+      // We'll use the left eye for analysis (in a real app, you might analyze both)
+      const conditionName = await detectDiseaseFromImage(leftEyeFile);
       
-      const conditionName = prediction.condition;
-      const info = eyeDiseaseInfo[conditionName] || eyeDiseaseInfo["Diabetic Retinopathy"];
+      // Get detailed information about the condition
+      const info = getDiseaseInfo(conditionName, 'eye');
 
       setAnalysisResult({
         condition: conditionName,
-        confidence: prediction.confidence,
         symptoms: info.symptoms,
         recommendations: info.recommendations
       });

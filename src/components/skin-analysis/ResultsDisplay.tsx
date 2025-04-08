@@ -4,7 +4,6 @@ import React from 'react';
 interface ResultsDisplayProps {
   results: {
     label: string;
-    score: number;
   }[] | null;
   isLoading: boolean;
 }
@@ -28,9 +27,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, isLoading }) =
       <h3 className="text-lg font-semibold mb-4">Analysis Results</h3>
       <div className="space-y-4">
         {results.map((result, index) => (
-          <div key={index} className="flex justify-between">
+          <div key={index}>
             <span className="font-medium">{result.label}</span>
-            <span className="text-gray-700">{(result.score * 100).toFixed(2)}%</span>
           </div>
         ))}
       </div>
