@@ -39,6 +39,7 @@ export const useSkinAnalysis = () => {
     try {
       // Call the Gemini API
       const conditionName = await detectDiseaseFromImage(selectedFile);
+      console.log("Detected condition:", conditionName);
       
       // Get detailed information about the condition
       const info = getDiseaseInfo(conditionName, 'skin');

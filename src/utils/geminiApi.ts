@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-// Disease information remains the same, just moved to this file
+// Disease information database
 export const skinDiseaseInfo: Record<string, {
   description: string;
   symptoms: string[];
@@ -218,36 +218,72 @@ export const eyeDiseaseInfo: Record<string, {
   }
 };
 
-// Since we're in a browser environment, we can't use Node.js file system functions
-// We need to modify the approach to work with File objects directly in the browser
+// New implementation using Google's Generative AI
+const API_KEY = "AIzaSyBKz0s6bMJvjq2ezF1yaQ5crjd6FtyMlmA";
+
+// Function to convert file to base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
+        const base64 = reader.result.split(',')[1];
+        resolve(base64);
+      } else {
+        reject(new Error("Failed to convert file to base64"));
+      }
+    };
+    reader.onerror = error => reject(error);
+  });
+};
+
+// Modified to work in browser environment with File objects
 export const detectDiseaseFromImage = async (imageFile: File): Promise<string> => {
   try {
-    // In a real implementation, you would:
-    // 1. Convert the File to base64
-    // 2. Send it to your backend that has the API key
-    // 3. Get the response
-
-    // Mock implementation for demonstration
-    // This simulates what would happen if we had a backend
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call delay
+    // Load the Google Generative AI SDK dynamically
+    const { GoogleGenerativeAI } = await import("@google/generative-ai");
     
-    // For demonstration, we'll return a random disease based on filename
-    // In a real implementation, this would come from the Gemini API
+    // Initialize the API with our key
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    
+    // Get base64 data from the file
+    const base64Data = await fileToBase64(imageFile);
+    
+    // Set up the model
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    
+    const prompt = "Only return the name of the Human disease in this image. Do not give extra text.";
+    
+    // Create the image part
+    const imagePart = {
+      inlineData: {
+        data: base64Data,
+        mimeType: imageFile.type
+      }
+    };
+    
+    // Generate content
+    const result = await model.generateContent([prompt, imagePart]);
+    const response = await result.response;
+    const text = response.text().trim();
+    
+    console.log("Gemini API response:", text);
+    return text;
+    
+  } catch (error) {
+    console.error("Error detecting disease with Gemini API:", error);
+    toast.error("Failed to analyze the image with Gemini API. Please try again.");
+    
+    // Fallback to a random disease for demonstration
     const skinDiseases = Object.keys(skinDiseaseInfo);
     const eyeDiseases = Object.keys(eyeDiseaseInfo);
-    
-    // Use image name to determine if it's more likely a skin or eye image
-    // This is just for demonstration - in a real app the API would determine this
     const isEyeImage = imageFile.name.toLowerCase().includes('eye');
     const diseases = isEyeImage ? eyeDiseases : skinDiseases;
-    
-    // Pick a random disease for demonstration
     const randomIndex = Math.floor(Math.random() * diseases.length);
+    
     return diseases[randomIndex];
-  } catch (error) {
-    console.error("Error detecting disease:", error);
-    toast.error("Failed to analyze the image. Please try again.");
-    throw error;
   }
 };
 
