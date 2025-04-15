@@ -38,7 +38,7 @@ export const useSkinAnalysis = () => {
 
     try {
       // Call the Gemini API
-      const conditionName = await detectDiseaseFromImage(selectedFile);
+      const conditionName = await detectDiseaseFromImage(selectedFile, 'skin');
       console.log("Detected condition:", conditionName);
       
       // Get detailed information about the condition
@@ -51,7 +51,14 @@ export const useSkinAnalysis = () => {
         recommendations: info.recommendations
       });
 
-      toast.success("Analysis completed successfully!");
+      // Show appropriate toast message based on condition
+      if (conditionName === 'No Skin Image Detected') {
+        toast.warning("No skin detected in the image. Please upload a clearer skin image.");
+      } else if (conditionName === 'Healthy') {
+        toast.success("Good news! No skin issues detected.");
+      } else {
+        toast.success("Analysis completed successfully!");
+      }
     } catch (error) {
       console.error("Analysis failed:", error);
       toast.error("Analysis failed. Please try again.");
