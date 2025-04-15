@@ -228,6 +228,30 @@ export const eyeDiseaseInfo: Record<string, {
       "Avoid smoking",
       "Consider AREDS vitamins if recommended by your doctor"
     ]
+  },
+  "Healthy": {
+    description: "No eye disease detected.",
+    symptoms: [
+      "No concerning symptoms observed"
+    ],
+    recommendations: [
+      "Continue regular eye care routine",
+      "Use eye protection when necessary",
+      "Get regular eye exams",
+      "If you still have any doubts, please consult an eye doctor"
+    ]
+  },
+  "No Eye Detected": {
+    description: "No eye was detected in the uploaded image.",
+    symptoms: [
+      "Not applicable"
+    ],
+    recommendations: [
+      "Upload a clearer image focusing on the eye",
+      "Ensure good lighting when taking the photo",
+      "Make sure the eye is visible and not obscured",
+      "If problems persist, consider using a different device to capture the image"
+    ]
   }
 };
 
@@ -270,7 +294,7 @@ export const detectDiseaseFromImage = async (imageFile: File, type: 'skin' | 'ey
     // Select the appropriate prompt based on type
     const prompt = type === 'skin' 
       ? "Only return the name of the disease if it's a skin disease and provide recommendations and tell whether to consult the doctor or not. Return 'healthy' if no disease is detected and 'but if you still have any doubts please consult a doctor'."
-      : "Only return the name of the disease if it's a eye disease and provide recommendations and tell whether to consult the doctor or not. Return 'healthy' if no disease is detected and 'but if you still have any doubts please consult a doctor'.";
+      : "Only return the name of the disease if it's a eye disease and provide recommendations and tell whether to consult the doctor or not. Return 'healthy' if no disease is detected and 'but if you still have any doubts please consult a doctor'. If an eye is not detected in the picture, then return 'No Eye Detected, please upload eye image.'";
     
     // Create the image part
     const imagePart = {

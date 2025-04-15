@@ -12,6 +12,7 @@ const EyeImageAnalysis = () => {
   const [eyePreview, setEyePreview] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any | null>(null);
+  const [noEyeDetected, setNoEyeDetected] = useState(false);
   const eyeInputRef = useRef<HTMLInputElement>(null);
 
   const handleEyeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +22,7 @@ const EyeImageAnalysis = () => {
         setEyeFile(file);
         setEyePreview(URL.createObjectURL(file));
         setAnalysisResult(null);
+        setNoEyeDetected(false);
       } else {
         toast.error("Please select an image file for the eye.");
       }
@@ -39,6 +41,7 @@ const EyeImageAnalysis = () => {
         setEyeFile(file);
         setEyePreview(URL.createObjectURL(file));
         setAnalysisResult(null);
+        setNoEyeDetected(false);
       } else {
         toast.error("Please drop an image file for the eye.");
       }
@@ -64,21 +67,29 @@ const EyeImageAnalysis = () => {
     }
 
     setIsAnalyzing(true);
+    setNoEyeDetected(false);
 
     try {
-      // Use the eye-specific prompt
-      const conditionName = await detectDiseaseFromImage(eyeFile, 'eye');
+      // Use the updated eye-specific prompt
+      const result = await detectDiseaseFromImage(eyeFile, 'eye');
       
-      // Get detailed information about the condition
-      const info = getDiseaseInfo(conditionName, 'eye');
+      // Check if no eye was detected
+      if (result.toLowerCase().includes("no eye detected")) {
+        setNoEyeDetected(true);
+        setAnalysisResult(null);
+        toast.error("No eye detected in the image. Please upload a clearer eye image.");
+      } else {
+        // Get detailed information about the condition
+        const info = getDiseaseInfo(result, 'eye');
 
-      setAnalysisResult({
-        condition: conditionName,
-        symptoms: info.symptoms,
-        recommendations: info.recommendations
-      });
+        setAnalysisResult({
+          condition: result,
+          symptoms: info.symptoms,
+          recommendations: info.recommendations
+        });
 
-      toast.success("Analysis completed successfully!");
+        toast.success("Analysis completed successfully!");
+      }
     } catch (error) {
       console.error("Analysis failed:", error);
       toast.error("Analysis failed. Please try again.");
@@ -91,6 +102,7 @@ const EyeImageAnalysis = () => {
     setEyeFile(null);
     setEyePreview(null);
     setAnalysisResult(null);
+    setNoEyeDetected(false);
     if (eyeInputRef.current) {
       eyeInputRef.current.value = "";
     }
@@ -133,6 +145,7 @@ const EyeImageAnalysis = () => {
                     onClick={() => {
                       setEyeFile(null);
                       setEyePreview(null);
+                      setNoEyeDetected(false);
                       if (eyeInputRef.current) {
                         eyeInputRef.current.value = "";
                       }
@@ -204,6 +217,23 @@ const EyeImageAnalysis = () => {
           </p>
         )}
       </div>
+
+      {/* No Eye Detected Message */}
+      {noEyeDetected && (
+        <Card className="animate-slide-in-bottom bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800">
+          <CardContent className="pt-6">
+            <div className="flex items-start">
+              <AlertCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-medium">No Eye Detected</h3>
+                <p className="text-sm text-amber-800 dark:text-amber-300 mt-1">
+                  We couldn't detect an eye in the uploaded image. Please upload a clearer image that shows the eye properly.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Results Section */}
       {analysisResult && (
