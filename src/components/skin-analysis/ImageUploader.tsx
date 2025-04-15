@@ -42,7 +42,9 @@ const ImageUploader = ({ previewUrl, onFileSelected, resetAnalysis }: ImageUploa
 
   const handleCameraCapture = () => {
     if (fileInputRef.current) {
-      // Set the capture attribute dynamically for mobile devices
+      // Set accept attribute to accept images from camera
+      fileInputRef.current.setAttribute("accept", "image/*");
+      // Set capture attribute to use the environment-facing camera
       fileInputRef.current.setAttribute("capture", "environment");
       fileInputRef.current.click();
       

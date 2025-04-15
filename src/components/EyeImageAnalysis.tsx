@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -50,8 +49,13 @@ const EyeImageAnalysis = () => {
 
   const handleEyeCapture = () => {
     if (eyeInputRef.current) {
+      // Set accept attribute to accept images from camera
+      eyeInputRef.current.setAttribute("accept", "image/*");
+      // Set capture attribute to use the environment-facing camera
       eyeInputRef.current.setAttribute("capture", "environment");
       eyeInputRef.current.click();
+      
+      // Remove the capture attribute after clicking to allow normal file selection later
       setTimeout(() => {
         if (eyeInputRef.current) {
           eyeInputRef.current.removeAttribute("capture");
