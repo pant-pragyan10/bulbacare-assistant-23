@@ -12,6 +12,7 @@ interface ImageUploaderProps {
 
 const ImageUploader = ({ previewUrl, onFileSelected, resetAnalysis }: ImageUploaderProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -41,19 +42,8 @@ const ImageUploader = ({ previewUrl, onFileSelected, resetAnalysis }: ImageUploa
   };
 
   const handleCameraCapture = () => {
-    if (fileInputRef.current) {
-      // Set accept attribute to accept images from camera
-      fileInputRef.current.setAttribute("accept", "image/*");
-      // Set capture attribute to use the environment-facing camera
-      fileInputRef.current.setAttribute("capture", "environment");
-      fileInputRef.current.click();
-      
-      // Remove the capture attribute after clicking to allow normal file selection later
-      setTimeout(() => {
-        if (fileInputRef.current) {
-          fileInputRef.current.removeAttribute("capture");
-        }
-      }, 1000);
+    if (cameraInputRef.current) {
+      cameraInputRef.current.click();
     }
   };
 
@@ -65,12 +55,23 @@ const ImageUploader = ({ previewUrl, onFileSelected, resetAnalysis }: ImageUploa
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      {/* Hidden file input for regular file uploads */}
       <input
         type="file"
         accept="image/*"
         onChange={handleFileChange}
         className="hidden"
         ref={fileInputRef}
+      />
+      
+      {/* Separate input specifically for camera capture */}
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileChange}
+        className="hidden"
+        ref={cameraInputRef}
       />
 
       {previewUrl ? (

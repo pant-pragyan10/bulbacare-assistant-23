@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +14,7 @@ const EyeImageAnalysis = () => {
   const [analysisResult, setAnalysisResult] = useState<any | null>(null);
   const [noEyeDetected, setNoEyeDetected] = useState(false);
   const eyeInputRef = useRef<HTMLInputElement>(null);
+  const cameraCaptureRef = useRef<HTMLInputElement>(null);
 
   const handleEyeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -48,19 +50,8 @@ const EyeImageAnalysis = () => {
   };
 
   const handleEyeCapture = () => {
-    if (eyeInputRef.current) {
-      // Set accept attribute to accept images from camera
-      eyeInputRef.current.setAttribute("accept", "image/*");
-      // Set capture attribute to use the environment-facing camera
-      eyeInputRef.current.setAttribute("capture", "environment");
-      eyeInputRef.current.click();
-      
-      // Remove the capture attribute after clicking to allow normal file selection later
-      setTimeout(() => {
-        if (eyeInputRef.current) {
-          eyeInputRef.current.removeAttribute("capture");
-        }
-      }, 1000);
+    if (cameraCaptureRef.current) {
+      cameraCaptureRef.current.click();
     }
   };
 
@@ -110,6 +101,9 @@ const EyeImageAnalysis = () => {
     if (eyeInputRef.current) {
       eyeInputRef.current.value = "";
     }
+    if (cameraCaptureRef.current) {
+      cameraCaptureRef.current.value = "";
+    }
   };
 
   return (
@@ -125,12 +119,23 @@ const EyeImageAnalysis = () => {
             onDragOver={handleDragOver}
             onDrop={handleEyeDrop}
           >
+            {/* Regular file upload input */}
             <input
               type="file"
               accept="image/*"
               onChange={handleEyeChange}
               className="hidden"
               ref={eyeInputRef}
+            />
+            
+            {/* Camera capture input */}
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleEyeChange}
+              className="hidden"
+              ref={cameraCaptureRef}
             />
 
             {eyePreview ? (
@@ -152,6 +157,9 @@ const EyeImageAnalysis = () => {
                       setNoEyeDetected(false);
                       if (eyeInputRef.current) {
                         eyeInputRef.current.value = "";
+                      }
+                      if (cameraCaptureRef.current) {
+                        cameraCaptureRef.current.value = "";
                       }
                     }}
                   >
